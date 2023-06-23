@@ -39,11 +39,10 @@ def hash_video_frames(video_path):
     return frame_hashes
 
 
-def find_transition(frame_hashes, threshold=0.9):
+def find_transition(video_path):
     cap = cv2.VideoCapture(video_path)
     # Читаем первый кадр
     ret, prev_frame = cap.read()
-    print('ret:', ret)
     # Преобразуем кадр в градации серого
     prev_gray = cv2.cvtColor(prev_frame, cv2.COLOR_BGR2GRAY)
     diffs = []
@@ -51,7 +50,7 @@ def find_transition(frame_hashes, threshold=0.9):
     print('fps', fps)
     transitions = []
     last_time = -1
-    MAXLEN = 7
+    MAXLEN = 10
     MIN_EPISODE = 2.0
     stack_frames = deque([prev_gray] * MAXLEN, maxlen=MAXLEN)
     while cap.isOpened():
@@ -75,15 +74,26 @@ def find_transition(frame_hashes, threshold=0.9):
                 # plt.imshow(curr_frame)
                 # plt.title(transition_time)
                 # plt.show()
-
         stack_frames.append(curr_gray)
     return transitions
 
 
 def main(video_path, folder_path):
-    # timestamps = get_timestamps(video_path)
-    return
+    transitions = find_transition(video_path)
+    if folder_path is None:
+        return transitions
+    frame_hashes = hash_video_frames()
+    results = []
+    for video_name in os.listdir(folder_path):
+        # read video from video_name each 1 second frame
+        # calculate hash of it, check if exists in frame_hashes
+
+        # read video_path with cv2, write code
+
+
+        pass
+    return results
 
 if __name__ == "__main__":
     args = get_args()
-    main(args.video_path, args.folder_path
+    main(args.video_path, args.folder_path)
